@@ -1,0 +1,100 @@
+
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #172033;
+
+  --card: #ffffff;
+  --card-foreground: #172033;
+
+  --muted: #64748b;
+  --border: #e2e8f0;
+
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+
+  --surface: #f1f5f9;
+  --success: #059669;
+  --danger: #dc2626;
+
+  color-scheme: light;
+}
+
+.dark {
+  --background: #0b1120;
+  --foreground: #e5e7eb;
+
+  --card: #111827;
+  --card-foreground: #f3f4f6;
+
+  --muted: #94a3b8;
+  --border: #273449;
+
+  --primary: #a78bfa;
+  --primary-foreground: #1e1b4b;
+
+  --surface: #1e293b;
+  --success: #34d399;
+  --danger: #f87171;
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-surface: var(--surface);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
