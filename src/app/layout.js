@@ -27,6 +27,10 @@ export const metadata = {
 
   authors: [{ name: "TaskFlow" }],
 
+  verification: {
+    google: "3XLrEfQI9v-KmjBgk6F4tK-x6gxvX1dcpm_OjNbaOjU",
+  },
+
   openGraph: {
     title: "TaskFlow | Smart Task Manager",
     description:
