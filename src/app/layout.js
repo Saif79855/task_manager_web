@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import StoreProvider from "@/providers/StoreProvider";
 
 export const metadata = {
-  metadataBase: new URL("https://your-domain.vercel.app"),
+  metadataBase: new URL("https://task-manager-web-smoky-zeta.vercel.app"),
 
   title: {
     default: "TaskFlow | Smart Task Manager",

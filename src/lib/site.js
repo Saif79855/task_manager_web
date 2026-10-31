@@ -1,1 +1,1 @@
-export const SITE_URL = "https://your-domain.vercel.app";
+export const SITE_URL = "https://task-manager-web-smoky-zeta.vercel.app";
