@@ -4,10 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+
 import { Eye, EyeOff, CheckSquare, AlertCircle } from "lucide-react";
 
 import { register } from "@/features/auth/authSlice";
 import GuestRoute from "@/components/auth/GuestRoute";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +42,12 @@ export default function RegisterPage() {
 
   return (
     <GuestRoute>
-      <div className="flex min-h-dvh items-center justify-center bg-background px-4 py-8 sm:py-10">
+      <div className="relative flex min-h-dvh items-center justify-center bg-background px-4 py-8 sm:py-10">
+        {/* Theme Toggle */}
+        <div className="absolute right-4 top-4 sm:right-6 sm:top-6">
+          <ThemeToggle />
+        </div>
+
         <div className="w-full max-w-md rounded-2xl border border-border bg-card p-5 shadow-lg sm:p-8">
           {/* Header */}
           <div className="mb-8 text-center">

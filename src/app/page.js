@@ -1,4 +1,6 @@
 import Link from "next/link";
+import ThemeToggle from "@/components/layout/ThemeToggle";
+
 import {
   ArrowRight,
   CheckCircle2,
@@ -43,10 +45,13 @@ export default function Home() {
             <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <CheckCircle2 size={21} />
             </div>
+
             <span className="text-xl font-bold tracking-tight">TaskFlow</span>
           </Link>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
+
             <Link
               href="/login"
               className="rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
@@ -99,7 +104,7 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Dashboard preview */}
+          {/* Dashboard Preview */}
           <div className="mx-auto mt-20 max-w-4xl rounded-2xl border border-border bg-card p-3 shadow-2xl sm:p-5">
             <div className="rounded-xl border border-border bg-background p-5 text-left sm:p-8">
               <div className="flex items-center justify-between gap-3">
@@ -107,8 +112,10 @@ export default function Home() {
                   <p className="text-sm text-muted-foreground">
                     Your workspace
                   </p>
+
                   <h2 className="mt-1 text-xl font-bold">My Tasks</h2>
                 </div>
+
                 <span className="rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary">
                   TaskFlow
                 </span>
@@ -127,6 +134,7 @@ export default function Home() {
                     <p className="text-xs text-muted-foreground sm:text-sm">
                       {item.label}
                     </p>
+
                     <p className="mt-2 text-2xl font-bold sm:text-3xl">
                       {item.value}
                     </p>
@@ -136,9 +144,18 @@ export default function Home() {
 
               <div className="mt-6 space-y-3">
                 {[
-                  { title: "Complete project documentation", done: true },
-                  { title: "Review pending tasks", done: true },
-                  { title: "Prepare weekly goals", done: false },
+                  {
+                    title: "Complete project documentation",
+                    done: true,
+                  },
+                  {
+                    title: "Review pending tasks",
+                    done: true,
+                  },
+                  {
+                    title: "Prepare weekly goals",
+                    done: false,
+                  },
                 ].map((task) => (
                   <div
                     key={task.title}
@@ -152,6 +169,7 @@ export default function Home() {
                           : "shrink-0 text-muted-foreground"
                       }
                     />
+
                     <span
                       className={
                         task.done
@@ -180,9 +198,11 @@ export default function Home() {
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">
               Features
             </p>
+
             <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
               Everything you need to stay organized
             </h2>
+
             <p className="mt-4 text-muted-foreground">
               Simple tools to help you manage your tasks and make progress every
               day.
@@ -240,6 +260,7 @@ export default function Home() {
       <footer className="border-t border-border px-5 py-7 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-sm text-muted-foreground sm:flex-row">
           <p>© {new Date().getFullYear()} TaskFlow. All rights reserved.</p>
+
           <p>Organize better. Get things done.</p>
         </div>
       </footer>
