@@ -3,6 +3,18 @@
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 
+const formatDateTimeLocal = (value) => {
+  if (!value) return "";
+
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) return "";
+
+  const offset = date.getTimezoneOffset() * 60000;
+
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+};
+
 export default function TaskModal({
   isOpen,
   onClose,
@@ -11,7 +23,13 @@ export default function TaskModal({
   error,
   initialTask = null,
 }) {
-  const [title, setTitle] = useState(initialTask?.description || "");
+  const [title, setTitle] = useState(initialTask?.title || "");
+  const [description, setDescription] = useState(
+    initialTask?.description || "",
+  );
+  const [deadline, setDeadline] = useState(
+    formatDateTimeLocal(initialTask?.deadline),
+  );
 
   const inputRef = useRef(null);
 
@@ -33,11 +51,16 @@ export default function TaskModal({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const description = title.trim();
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
 
-    if (!description) return;
+    if (trimmedTitle.length < 3) return;
 
-    onSubmit({ description });
+    onSubmit({
+      title: trimmedTitle,
+      description: trimmedDescription,
+      deadline: deadline ? new Date(deadline).toISOString() : null,
+    });
   };
 
   const handleClose = () => {
@@ -66,12 +89,13 @@ export default function TaskModal({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Task Title */}
           <div>
             <label
               htmlFor="task-title"
               className="mb-2 block text-sm font-medium"
             >
-              Task Title
+              Task Title *
             </label>
 
             <input
@@ -82,8 +106,55 @@ export default function TaskModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
+              minLength={3}
               disabled={isSubmitting}
               placeholder="Enter task title"
+              className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary disabled:opacity-60"
+            />
+          </div>
+
+          {/* Task Description */}
+          <div>
+            <label
+              htmlFor="task-description"
+              className="mb-2 block text-sm font-medium"
+            >
+              Description
+            </label>
+
+            <textarea
+              id="task-description"
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              maxLength={500}
+              rows={3}
+              disabled={isSubmitting}
+              placeholder="Add more details about this task..."
+              className="w-full resize-none rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary disabled:opacity-60"
+            />
+
+            <p className="mt-1 text-right text-xs text-muted">
+              {description.length}/500
+            </p>
+          </div>
+
+          {/* Task Deadline */}
+          <div>
+            <label
+              htmlFor="task-deadline"
+              className="mb-2 block text-sm font-medium"
+            >
+              Deadline
+            </label>
+
+            <input
+              id="task-deadline"
+              name="deadline"
+              type="datetime-local"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              disabled={isSubmitting}
               className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary disabled:opacity-60"
             />
           </div>
