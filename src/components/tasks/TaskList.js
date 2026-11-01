@@ -29,6 +29,8 @@ export default function TaskList({
   searchQuery,
   onAddTask,
   onSearchChange,
+  activeFilter,
+  onFilterChange,
 }) {
   const dispatch = useDispatch();
 
@@ -36,7 +38,6 @@ export default function TaskList({
     (state) => state.tasks,
   );
 
-  const [activeFilter, setActiveFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
   const [selectedTaskId, setSelectedTaskId] = useState(null);
 
@@ -207,7 +208,7 @@ export default function TaskList({
         title: `No ${activeFilter} tasks`,
         description: `You don't have any ${activeFilter} tasks right now.`,
         action: "Show All Tasks",
-        onClick: () => setActiveFilter("all"),
+        onClick: () => onFilterChange("all"),
       };
     }
 
@@ -259,7 +260,7 @@ export default function TaskList({
             <button
               key={filter.value}
               type="button"
-              onClick={() => setActiveFilter(filter.value)}
+              onClick={() => onFilterChange(filter.value)}
               className={`rounded-lg px-3 py-2 text-sm font-medium transition sm:px-4 ${
                 activeFilter === filter.value
                   ? "bg-primary text-primary-foreground"

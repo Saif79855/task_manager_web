@@ -17,13 +17,29 @@ import {
 import { logoutUserThunk } from "@/features/auth/authSlice";
 
 const menuItems = [
-  { label: "Dashboard", icon: LayoutDashboard },
-  { label: "All Tasks", icon: ListTodo },
-  { label: "Completed", icon: CheckCircle2 },
-  { label: "Pending", icon: Clock },
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    key: "dashboard",
+  },
+  {
+    label: "All Tasks",
+    icon: ListTodo,
+    key: "allTasks",
+  },
+  {
+    label: "Completed",
+    icon: CheckCircle2,
+    key: "completed",
+  },
+  {
+    label: "Pending",
+    icon: Clock,
+    key: "pending",
+  },
 ];
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ isOpen, onClose, activeMenu, onNavigate }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -44,6 +60,11 @@ export default function Sidebar({ isOpen, onClose }) {
       onClose?.();
       router.replace("/login");
     }
+  };
+
+  const handleNavigation = (menu) => {
+    onNavigate(menu);
+    onClose?.();
   };
 
   return (
@@ -67,6 +88,7 @@ export default function Sidebar({ isOpen, onClose }) {
           <h1 className="text-2xl font-bold text-primary">TaskFlow</h1>
 
           <button
+            type="button"
             onClick={onClose}
             className="rounded-lg p-2 hover:bg-surface lg:hidden"
             aria-label="Close sidebar"
@@ -79,12 +101,18 @@ export default function Sidebar({ isOpen, onClose }) {
         <nav className="flex-1 space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
+            const isActive = activeMenu === item.key;
 
             return (
               <button
-                key={item.label}
-                onClick={onClose}
-                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-muted transition hover:bg-surface hover:text-foreground"
+                key={item.key}
+                type="button"
+                onClick={() => handleNavigation(item.key)}
+                className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 transition ${
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted hover:bg-surface hover:text-foreground"
+                }`}
               >
                 <Icon size={20} />
                 <span>{item.label}</span>
@@ -96,6 +124,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* Bottom Menu */}
         <div className="mt-6 shrink-0 space-y-2 border-t border-border pt-4">
           <button
+            type="button"
             onClick={onClose}
             className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-muted hover:bg-surface"
           >
@@ -104,6 +133,7 @@ export default function Sidebar({ isOpen, onClose }) {
           </button>
 
           <button
+            type="button"
             onClick={handleLogout}
             disabled={loggingOut}
             className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-danger hover:bg-surface disabled:opacity-60"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
@@ -20,12 +20,62 @@ export default function DashboardPage() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [activeMenu, setActiveMenu] = useState(null);
+
+  const mainRef = useRef(null);
+  const taskListRef = useRef(null);
+
   const dispatch = useDispatch();
 
   const { creating, updating, error } = useSelector((state) => state.tasks);
 
   const isEditMode = Boolean(selectedTask);
   const isSubmitting = creating || updating;
+
+  // Handle sidebar navigation
+  const handleNavigation = (menu) => {
+    setActiveMenu(menu);
+
+    if (menu === "completed") {
+      setActiveFilter("completed");
+    } else if (menu === "pending") {
+      setActiveFilter("pending");
+    } else {
+      setActiveFilter("all");
+    }
+
+    // Scroll only on mobile
+    if (window.innerWidth < 1024) {
+      requestAnimationFrame(() => {
+        if (menu === "dashboard") {
+          mainRef.current?.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        } else {
+          taskListRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      });
+    }
+  };
+
+  // Handle filters inside TaskList
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter);
+
+    const menu =
+      filter === "completed"
+        ? "completed"
+        : filter === "pending"
+          ? "pending"
+          : "allTasks";
+
+    setActiveMenu(menu);
+  };
 
   // Open Create Modal
   const handleOpenCreateModal = () => {
@@ -87,6 +137,8 @@ export default function DashboardPage() {
         <Sidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          activeMenu={activeMenu}
+          onNavigate={handleNavigation}
         />
 
         <Navbar
@@ -96,18 +148,26 @@ export default function DashboardPage() {
         />
 
         {/* Scrollable Dashboard Content */}
-        <main className="h-dvh min-w-0 overflow-y-auto">
+        <main ref={mainRef} className="h-dvh min-w-0 overflow-y-auto">
           <div className="px-4 pb-8 pt-24 sm:px-6 lg:px-8">
-            <DashboardHeader onAddTask={handleOpenCreateModal} />
+            {/* Dashboard Section */}
+            <div>
+              <DashboardHeader onAddTask={handleOpenCreateModal} />
 
-            <TaskStats />
+              <TaskStats />
+            </div>
 
-            <TaskList
-              onEditTask={handleEditTask}
-              searchQuery={searchQuery}
-              onAddTask={handleOpenCreateModal}
-              onSearchChange={setSearchQuery}
-            />
+            {/* Task List Section */}
+            <div ref={taskListRef} className="scroll-mt-24">
+              <TaskList
+                onEditTask={handleEditTask}
+                searchQuery={searchQuery}
+                onAddTask={handleOpenCreateModal}
+                onSearchChange={setSearchQuery}
+                activeFilter={activeFilter}
+                onFilterChange={handleFilterChange}
+              />
+            </div>
           </div>
         </main>
 
