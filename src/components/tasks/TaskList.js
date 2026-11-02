@@ -135,6 +135,22 @@ export default function TaskList({
         return (a.title || "").localeCompare(b.title || "");
       }
 
+      // Earliest deadline first
+      if (sortOrder === "earliestDeadline" || sortOrder === "latestDeadline") {
+        const dateA = a.deadline ? new Date(a.deadline).getTime() : NaN;
+        const dateB = b.deadline ? new Date(b.deadline).getTime() : NaN;
+
+        const hasDateA = Number.isFinite(dateA);
+        const hasDateB = Number.isFinite(dateB);
+
+        // Tasks without valid deadlines stay at the bottom
+        if (!hasDateA && !hasDateB) return 0;
+        if (!hasDateA) return 1;
+        if (!hasDateB) return -1;
+
+        return sortOrder === "earliestDeadline" ? dateA - dateB : dateB - dateA;
+      }
+
       return 0;
     });
   }, [tasks, searchQuery, sortOrder]);
@@ -486,6 +502,8 @@ export default function TaskList({
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
               <option value="az">A - Z</option>
+              <option value="earliestDeadline">Earliest Deadline</option>
+              <option value="latestDeadline">Latest Deadline</option>
             </select>
           </div>
         </div>

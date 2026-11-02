@@ -31,6 +31,9 @@ export default function TaskModal({
     formatDateTimeLocal(initialTask?.deadline),
   );
 
+  const [titleError, setTitleError] = useState("");
+  const [deadlineError, setDeadlineError] = useState("");
+
   const inputRef = useRef(null);
 
   const isEditMode = Boolean(initialTask);
@@ -54,12 +57,50 @@ export default function TaskModal({
     const trimmedTitle = title.trim();
     const trimmedDescription = description.trim();
 
-    if (trimmedTitle.length < 3) return;
+    let isValid = true;
+
+    // Title validation
+    if (!trimmedTitle) {
+      setTitleError("Task title is required.");
+      isValid = false;
+    } else if (trimmedTitle.length < 3) {
+      setTitleError("Title must be at least 3 characters.");
+      isValid = false;
+    } else if (trimmedTitle.length > 100) {
+      setTitleError("Title cannot exceed 100 characters.");
+      isValid = false;
+    } else {
+      setTitleError("");
+    }
+
+    // Description validation
+    if (trimmedDescription.length > 500) {
+      isValid = false;
+    }
+
+    // Deadline validation
+    let formattedDeadline = null;
+
+    if (deadline) {
+      const deadlineDate = new Date(deadline);
+
+      if (isNaN(deadlineDate.getTime())) {
+        setDeadlineError("Please enter a valid deadline.");
+        isValid = false;
+      } else {
+        setDeadlineError("");
+        formattedDeadline = deadlineDate.toISOString();
+      }
+    } else {
+      setDeadlineError("");
+    }
+
+    if (!isValid) return;
 
     onSubmit({
       title: trimmedTitle,
       description: trimmedDescription,
-      deadline: deadline ? new Date(deadline).toISOString() : null,
+      deadline: formattedDeadline,
     });
   };
 
@@ -88,7 +129,7 @@ export default function TaskModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} noValidate className="space-y-5">
           {/* Task Title */}
           <div>
             <label
@@ -104,13 +145,32 @@ export default function TaskModal({
               name="title"
               type="text"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              minLength={3}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setTitleError("");
+              }}
+              maxLength={100}
+              aria-required="true"
+              aria-invalid={Boolean(titleError)}
+              aria-describedby={titleError ? "title-error" : undefined}
               disabled={isSubmitting}
               placeholder="Enter task title"
               className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary disabled:opacity-60"
             />
+
+            {titleError && (
+              <p
+                id="title-error"
+                role="alert"
+                className="mt-1 text-sm text-danger"
+              >
+                {titleError}
+              </p>
+            )}
+
+            <p className="mt-1 text-right text-xs text-muted">
+              {title.length}/100
+            </p>
           </div>
 
           {/* Task Description */}
@@ -153,10 +213,25 @@ export default function TaskModal({
               name="deadline"
               type="datetime-local"
               value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
+              onChange={(e) => {
+                setDeadline(e.target.value);
+                setDeadlineError("");
+              }}
+              aria-invalid={Boolean(deadlineError)}
+              aria-describedby={deadlineError ? "deadline-error" : undefined}
               disabled={isSubmitting}
               className="w-full rounded-lg border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary disabled:opacity-60"
             />
+
+            {deadlineError && (
+              <p
+                id="deadline-error"
+                role="alert"
+                className="mt-1 text-sm text-danger"
+              >
+                {deadlineError}
+              </p>
+            )}
           </div>
 
           {error && <p className="text-sm text-danger">{error}</p>}
