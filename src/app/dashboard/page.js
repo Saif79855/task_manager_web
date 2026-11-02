@@ -34,6 +34,7 @@ export default function DashboardPage() {
   const isSubmitting = creating || updating;
 
   // Handle sidebar navigation
+
   const handleNavigation = (menu) => {
     setActiveMenu(menu);
 
@@ -45,22 +46,19 @@ export default function DashboardPage() {
       setActiveFilter("all");
     }
 
-    // Scroll only on mobile
-    if (window.innerWidth < 1024) {
-      requestAnimationFrame(() => {
-        if (menu === "dashboard") {
-          mainRef.current?.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-        } else {
-          taskListRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }
-      });
-    }
+    requestAnimationFrame(() => {
+      if (menu === "dashboard") {
+        mainRef.current?.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      } else {
+        taskListRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    });
   };
 
   // Handle filters inside TaskList
